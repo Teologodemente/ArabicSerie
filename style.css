@@ -1,0 +1,676 @@
+/* ============================================================
+   ORDEN ARÁBIGO — cristal cian / índigo (glassmorphism)
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --bg-1: #05070f;
+  --bg-2: #0a1024;
+  --cyan: #22d3ee;
+  --cyan-soft: rgba(34, 211, 238, 0.16);
+  --indigo: #818cf8;
+  --violet: #a78bfa;
+  --text: #e8f4ff;
+  --dim: #8ba3c7;
+  --ok: #34d399;
+  --ok-bg: rgba(16, 185, 129, 0.14);
+  --gap: clamp(4px, 1.4vw, 7px);
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
+    "Liberation Mono", monospace;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--mono);
+  background:
+    radial-gradient(900px 500px at 85% -10%, rgba(34, 211, 238, 0.14), transparent 60%),
+    radial-gradient(800px 600px at -15% 105%, rgba(129, 140, 248, 0.16), transparent 60%),
+    radial-gradient(600px 400px at 50% 50%, rgba(167, 139, 250, 0.08), transparent 70%),
+    linear-gradient(165deg, var(--bg-2) 0%, var(--bg-1) 100%);
+  background-attachment: fixed;
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Resplandor flotante de fondo */
+body::before {
+  content: "";
+  position: fixed;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  top: -110px;
+  right: -90px;
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.22), transparent 70%);
+  filter: blur(30px);
+  pointer-events: none;
+  animation: drift 14s ease-in-out infinite;
+  z-index: 0;
+}
+
+/* Viñeta suave */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    130% 95% at 50% 40%,
+    transparent 58%,
+    rgba(0, 0, 0, 0.5) 100%
+  );
+  z-index: 6;
+}
+
+@keyframes drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-40px, 50px) scale(1.15); }
+}
+
+.game {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 520px);
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding: max(14px, env(safe-area-inset-top)) 14px
+    max(14px, env(safe-area-inset-bottom));
+  gap: 12px;
+}
+
+/* ---------------- Encabezado cristal ---------------- */
+.head {
+  text-align: center;
+  flex: 0 0 auto;
+  padding: 14px 14px 12px;
+  border-radius: 18px;
+  background: linear-gradient(
+    150deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(255, 255, 255, 0.025) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Brillo superior del cristal */
+.head::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 8%;
+  width: 84%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.7), transparent);
+}
+
+.title {
+  font-size: clamp(1.15rem, 5.4vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-indent: 0.22em;
+  background: linear-gradient(90deg, var(--cyan), var(--indigo) 55%, var(--violet));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 14px rgba(34, 211, 238, 0.35));
+}
+
+.subtitle {
+  margin-top: 5px;
+  font-size: clamp(0.62rem, 2.8vw, 0.75rem);
+  letter-spacing: 0.32em;
+  text-indent: 0.32em;
+  color: var(--dim);
+}
+
+.chips {
+  margin-top: 9px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.moves {
+  display: inline-block;
+  font-size: clamp(0.7rem, 3vw, 0.82rem);
+  letter-spacing: 0.16em;
+  color: #b9d4ff;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: var(--cyan-soft);
+  border: 1px solid rgba(34, 211, 238, 0.35);
+  font-variant-numeric: tabular-nums;
+}
+
+#timerLabel {
+  color: #e9d5ff;
+  background: rgba(167, 139, 250, 0.14);
+  border-color: rgba(167, 139, 250, 0.4);
+}
+
+.moves.win {
+  color: #6ee7b7 !important;
+  background: rgba(16, 185, 129, 0.14) !important;
+  border-color: rgba(52, 211, 153, 0.5) !important;
+  animation: blink 1s steps(2, start) infinite;
+}
+
+.progress {
+  margin: 10px auto 0;
+  width: min(78%, 320px);
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--cyan), var(--indigo), var(--violet));
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.6);
+  transition: width 0.35s ease;
+}
+
+@keyframes shimmer {
+  to { background-position: 200% 0; }
+}
+
+/* ---------------- Tablero ---------------- */
+.board-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-auto-rows: 1fr;
+  gap: var(--gap);
+  width: 100%;
+  aspect-ratio: 5 / 8;
+  max-height: 100%;
+}
+
+/* ---------------- Ficha de cristal ---------------- */
+.cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    150deg,
+    rgba(255, 255, 255, 0.09) 0%,
+    rgba(255, 255, 255, 0.03) 55%,
+    rgba(34, 211, 238, 0.05) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: clamp(8px, 2.4vw, 12px);
+  font-family: var(--mono);
+  font-size: clamp(0.85rem, 4.6vw, 1.35rem);
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -8px 16px rgba(34, 211, 238, 0.04);
+  transition: background 0.18s ease, border-color 0.18s ease,
+    transform 0.12s ease, box-shadow 0.2s ease, color 0.18s ease;
+  overflow: hidden;
+}
+
+/* Brillo diagonal del cristal */
+.cell::before {
+  content: "";
+  position: absolute;
+  top: -60%;
+  left: -45%;
+  width: 70%;
+  height: 220%;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.14) 50%,
+    transparent 100%
+  );
+  transform: rotate(8deg);
+  pointer-events: none;
+}
+
+.cell:active {
+  transform: scale(0.93);
+}
+
+/* Animación de revolver */
+.board.is-shuffling .cell {
+  animation: flipShuffle 0.55s cubic-bezier(0.34, 1.4, 0.64, 1) backwards;
+}
+
+@keyframes flipShuffle {
+  0% {
+    transform: rotateY(90deg) scale(0.7);
+    opacity: 0;
+  }
+  100% {
+    transform: rotateY(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Seleccionada */
+.cell.is-selected {
+  background: linear-gradient(
+    150deg,
+    rgba(34, 211, 238, 0.3) 0%,
+    rgba(129, 140, 248, 0.24) 100%
+  );
+  border: 2px solid var(--cyan);
+  color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.22),
+    0 0 26px rgba(34, 211, 238, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Destino sugerido (dónde debe ir la seleccionada) */
+.cell.is-hint {
+  border: 2px dashed var(--cyan);
+  background: linear-gradient(
+    150deg,
+    rgba(34, 211, 238, 0.14) 0%,
+    rgba(129, 140, 248, 0.1) 100%
+  );
+  animation: hintPulse 1.1s ease-in-out infinite;
+}
+
+/* Correctamente acomodada */
+.cell.is-correct {
+  background: var(--ok-bg);
+  border: 1.5px solid rgba(52, 211, 153, 0.65);
+  color: #b7f5d6;
+  cursor: default;
+  box-shadow: 0 0 16px rgba(52, 211, 153, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.cell.is-correct::before {
+  display: none;
+}
+
+.cell.is-correct::after {
+  content: "✓";
+  position: absolute;
+  top: 3px;
+  right: 6px;
+  font-size: clamp(0.42rem, 2vw, 0.58rem);
+  font-weight: 900;
+  color: var(--ok);
+}
+
+/* Victoria: cristal verde por todas partes */
+.board.complete .cell {
+  background: linear-gradient(
+    150deg,
+    rgba(52, 211, 153, 0.22) 0%,
+    rgba(16, 185, 129, 0.14) 100%
+  );
+  border: 1.5px solid rgba(52, 211, 153, 0.7);
+  color: #d1fae5;
+  animation: pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+.board.complete .cell::before {
+  display: none;
+}
+
+.board.complete .cell::after {
+  content: "✓";
+  position: absolute;
+  top: 3px;
+  right: 6px;
+  font-size: clamp(0.42rem, 2vw, 0.58rem);
+  font-weight: 900;
+  color: var(--ok);
+}
+
+@keyframes hintPulse {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(34, 211, 238, 0.14); }
+}
+
+@keyframes pop {
+  from { transform: scale(0.7); }
+  to { transform: scale(1); }
+}
+
+@keyframes blink {
+  50% { opacity: 0.4; }
+}
+
+/* Casilla bloqueada (ya acomodada o fuera de turno) */
+.cell.is-locked {
+  cursor: not-allowed;
+}
+
+.cell.is-blocked {
+  animation: shakeBlocked 0.45s ease;
+  border-color: #f87171;
+  box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.3);
+}
+
+@keyframes shakeBlocked {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+/* Toast de aviso */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(88px + env(safe-area-inset-bottom));
+  transform: translateX(-50%) translateY(14px);
+  background: rgba(6, 10, 22, 0.92);
+  border: 1px solid rgba(34, 211, 238, 0.45);
+  color: var(--text);
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+  z-index: 30;
+  white-space: nowrap;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(34, 211, 238, 0.2);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ---------------- Pie / botón cristal ---------------- */
+.foot {
+  flex: 0 0 auto;
+}
+
+.btn {
+  width: 100%;
+  padding: 15px 16px;
+  font-family: var(--mono);
+  font-size: clamp(0.85rem, 4vw, 1rem);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-indent: 0.18em;
+  color: var(--text);
+  background: linear-gradient(
+    150deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(34, 211, 238, 0.07) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 13px;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  transition: background 0.18s ease, transform 0.12s ease,
+    border-color 0.18s ease, box-shadow 0.2s ease, color 0.18s ease;
+}
+
+.btn:active {
+  transform: scale(0.97);
+  background: linear-gradient(
+    150deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(34, 211, 238, 0.12) 100%
+  );
+}
+
+@media (hover: hover) {
+  .btn:hover {
+    border-color: rgba(34, 211, 238, 0.7);
+    color: #ccf6ff;
+    box-shadow: 0 8px 28px rgba(34, 211, 238, 0.22),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+}
+
+.btn-primary {
+  background: linear-gradient(
+    150deg,
+    rgba(34, 211, 238, 0.26) 0%,
+    rgba(129, 140, 248, 0.22) 100%
+  );
+  border-color: rgba(34, 211, 238, 0.6);
+  color: #e0f7ff;
+  box-shadow: 0 8px 26px rgba(34, 211, 238, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
+}
+
+@media (hover: hover) {
+  .btn-primary:hover {
+    background: linear-gradient(
+      150deg,
+      rgba(34, 211, 238, 0.36) 0%,
+      rgba(129, 140, 248, 0.3) 100%
+    );
+    box-shadow: 0 10px 34px rgba(34, 211, 238, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* ---------------- Modal victoria ---------------- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 6, 14, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 20;
+  animation: fadeIn 0.3s ease;
+}
+
+.overlay[hidden] {
+  display: none;
+}
+
+.modal {
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(34, 211, 238, 0.06) 60%,
+    rgba(129, 140, 248, 0.08) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 22px;
+  padding: 30px 22px 22px;
+  width: min(100%, 340px);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.modal::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 12%;
+  width: 76%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+}
+
+.medal {
+  font-size: 3.2rem;
+  animation: bounce 1.3s ease-in-out infinite;
+}
+
+.modal h2 {
+  font-size: 1.3rem;
+  letter-spacing: 0.16em;
+  background: linear-gradient(90deg, var(--cyan), var(--violet));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.modal-msg {
+  color: var(--cyan);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+}
+
+/* Estadísticas de victoria: tiempo y movimientos */
+.modal-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 14px 10px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.mstat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  flex: 1;
+}
+
+.mstat-value {
+  font-size: clamp(1.3rem, 7vw, 1.7rem);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+  background: linear-gradient(90deg, var(--cyan), var(--violet));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.mstat-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  color: var(--dim);
+}
+
+.mstat-divider {
+  width: 1px;
+  align-self: stretch;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(34, 211, 238, 0.5),
+    transparent
+  );
+}
+
+.modal-actions {
+  display: flex;
+  gap: 9px;
+  margin-top: 4px;
+}
+
+.modal-actions .btn {
+  font-size: 0.72rem;
+  padding: 13px 8px;
+  letter-spacing: 0.1em;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.82); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+
+/* ---------------- Celular pequeño ---------------- */
+@media (max-width: 350px) {
+  .title { letter-spacing: 0.14em; text-indent: 0.14em; }
+}
+
+/* ---------------- Horizontal ---------------- */
+@media (orientation: landscape) and (max-height: 500px) {
+  .game {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
+    gap: 10px;
+  }
+  .head {
+    flex: 0 0 30%;
+    text-align: left;
+    padding: 10px 12px;
+  }
+  .chips { justify-content: flex-start; flex-wrap: wrap; }
+  .progress { margin-left: 0; width: 100%; }
+  .board-wrap { flex: 1 1 60%; }
+  .foot { flex: 0 0 100%; }
+  .btn { padding: 12px; }
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#090b10" />
+  <title>Orden Arábigo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="game">
+    <header class="head">
+      <h1 class="title">ORDEN ARÁBIGO</h1>
+      <p class="subtitle">SORT 01 — 40</p>
+      <div class="chips">
+        <span class="moves" id="movesLabel">MOVES 0000</span>
+        <span class="moves" id="timerLabel">TIME 00:00</span>
+      </div>
+      <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+    </header>
+
+    <section class="board-wrap">
+      <div class="board" id="board" aria-label="Tablero de 40 fichas"></div>
+    </section>
+
+    <footer class="foot">
+      <button class="btn" id="btnReset" type="button">🔄 NUEVO JUEGO</button>
+    </footer>
+
+    <div class="overlay" id="overlay" hidden>
+      <div class="modal">
+        <div class="medal">🏆</div>
+        <h2>¡Completado!</h2>
+        <p class="modal-msg" id="modalStats">Lo lograste.</p>
+        <div class="modal-stats">
+          <div class="mstat">
+            <span class="mstat-value" id="modalTime">00:00</span>
+            <span class="mstat-label">TIEMPO</span>
+          </div>
+          <div class="mstat-divider"></div>
+          <div class="mstat">
+            <span class="mstat-value" id="modalMoves">0</span>
+            <span class="mstat-label">MOVIMIENTOS</span>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-primary" id="btnPlayAgain" type="button">🔄 NUEVO JUEGO</button>
+          <button class="btn" id="btnClose" type="button">CERRAR</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
